@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel del personal · Entre Montañas</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2b3524">
+<link rel="icon" href="img/icono.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  body { background: var(--crema-100); }
+  /* acceso */
+  .acceso { min-height: 100dvh; display: grid; place-items: center; padding: 24px 16px; background: radial-gradient(120% 80% at 50% 0%, var(--verde-700), var(--verde-900)); }
+  .acceso .tarjeta { width: min(360px, 100%); padding: 32px 26px; display: grid; gap: 18px; justify-items: center; text-align: center; }
+  .acceso h1 { font-size: 1.5rem; }
+  .puntos { display: flex; gap: 12px; height: 18px; }
+  .puntos i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--verde-600); }
+  .puntos i.lleno { background: var(--verde-800); border-color: var(--verde-800); }
+  .teclado { display: grid; grid-template-columns: repeat(3, 72px); gap: 12px; }
+  .teclado button { height: 64px; border-radius: 18px; border: 0; background: var(--crema-200); font-size: 1.5rem; font-weight: 600; cursor: pointer; }
+  .teclado button:active { background: var(--crema-300); }
+  .temblor { animation: temblor .35s; }
+  @keyframes temblor { 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+
+  /* barra */
+  .barra { background: var(--verde-900); color: var(--crema-100); position: sticky; top: 0; z-index: 20; }
+  .barra .fila { display: flex; align-items: center; gap: 14px; padding: 10px 0; flex-wrap: wrap; }
+  .barra .marca svg { width: 32px; height: 24px; }
+  .barra .marca b { font-size: 1rem; }
+  .segmento { display: inline-flex; background: rgba(246,240,228,.1); border-radius: 999px; padding: 3px; }
+  .segmento button { border: 0; background: transparent; color: var(--verde-300); padding: .4rem .9rem; border-radius: 999px; font-weight: 600; cursor: pointer; font-size: .9rem; }
+  .segmento button[aria-pressed="true"] { background: var(--crema-100); color: var(--verde-900); }
+  .espacio { flex: 1; }
+  .en-vivo { display: inline-flex; align-items: center; gap: .4rem; font-size: .8rem; color: var(--verde-300); }
+  .en-vivo i { width: 8px; height: 8px; border-radius: 50%; background: #d06c53; }
+  .en-vivo.ok i { background: #7fc27a; box-shadow: 0 0 0 4px rgba(127,194,122,.2); }
+  .barra .btn-icono { background: rgba(246,240,228,.08); color: var(--crema-100); min-height: 38px; width: 38px; border: 0; }
+  .pestanas { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+  .pestanas button { border: 0; background: transparent; color: var(--verde-300); padding: .7rem 1rem; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; display: inline-flex; gap: .4rem; align-items: center; }
+  .pestanas button[aria-selected="true"] { color: var(--crema-50); border-color: var(--miel-500); }
+  .burbuja { display: inline-grid; place-items: center; min-width: 20px; height: 20px; border-radius: 999px; background: var(--miel-500); color: var(--verde-900); font-size: .72rem; font-weight: 800; padding: 0 6px; }
+
+  .vista { padding: 20px 0 60px; }
+  .vista[hidden] { display: none; }
+  .cabecera-vista { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .cabecera-vista h2 { font-size: 1.5rem; }
+  .filtros { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .filtros .input { width: auto; min-height: 40px; padding: .4rem .8rem; }
+
+  /* métricas */
+  .metricas { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 18px; }
+  .metrica { padding: 16px 18px; }
+  .metrica small { color: var(--tinta-suave); font-size: .8rem; font-weight: 600; }
+  .metrica b { display: block; font-family: var(--f-titulo); font-size: 1.9rem; font-weight: 500; color: var(--verde-800); line-height: 1.1; margin-top: 4px; }
+
+  /* llamadas */
+  .llamadas { display: grid; gap: 10px; margin-bottom: 18px; }
+  .llamada { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 16px; background: var(--miel-100); border: 1.5px solid var(--miel-500); flex-wrap: wrap; animation: entra .3s; }
+  .llamada .ic { width: 40px; height: 40px; border-radius: 50%; background: var(--miel-500); color: var(--verde-900); display: grid; place-items: center; flex: none; }
+  .llamada .txt { flex: 1; min-width: 180px; }
+  .llamada b { font-size: 1.05rem; }
+  .llamada small { display: block; color: var(--miel-600); }
+
+  /* tablero */
+  .tablero { display: grid; grid-template-columns: repeat(4, minmax(250px, 1fr)); gap: 14px; overflow-x: auto; padding-bottom: 8px; align-items: start; }
+  .columna { background: var(--crema-200); border-radius: var(--radio-lg); padding: 12px; min-height: 200px; }
+  .columna > header { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px 10px; }
+  .columna > header h3 { font-family: var(--f-texto); font-size: .95rem; font-weight: 700; color: var(--verde-800); }
+  .columna .vacia { color: var(--tinta-suave); font-size: .85rem; text-align: center; padding: 24px 8px; }
+  .ticket { background: var(--crema-50); border-radius: 16px; padding: 14px; box-shadow: var(--sombra); margin-bottom: 10px; display: grid; gap: 10px; border-left: 5px solid var(--verde-300); }
+  .ticket.nuevo { border-left-color: var(--miel-500); animation: entra .35s; }
+  .ticket.tarde { border-left-color: var(--arcilla); }
+  .ticket header { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
+  .ticket header b { font-family: var(--f-titulo); font-size: 1.35rem; font-weight: 600; color: var(--verde-800); }
+  .ticket header small { color: var(--tinta-suave); font-size: .8rem; text-align: right; }
+  .ticket ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .ticket li { display: grid; grid-template-columns: 28px 1fr; gap: 2px 6px; }
+  .ticket li .q { font-weight: 800; color: var(--verde-700); }
+  .ticket li .n { font-weight: 600; }
+  .ticket li .d { grid-column: 2; font-size: .82rem; color: var(--tinta-suave); }
+  .ticket .nota { background: var(--miel-100); color: var(--verde-900); border-radius: 10px; padding: 6px 10px; font-size: .85rem; }
+  .ticket .acciones { display: flex; gap: 6px; flex-wrap: wrap; }
+  .ticket .acciones .btn { flex: 1; }
+  .ticket .acciones .btn-icono { flex: none; width: 40px; }
+  .ticket .pie-t { display: flex; justify-content: space-between; font-size: .88rem; color: var(--tinta-suave); }
+  .ticket .pie-t b { color: var(--tinta); }
+  .historial { margin-top: 18px; }
+  .historial summary { cursor: pointer; font-weight: 600; color: var(--verde-700); }
+
+  /* reservas */
+  .dia-res { margin-top: 18px; }
+  .dia-res h3 { font-size: 1.1rem; margin-bottom: 8px; }
+  .dia-res h3::first-letter { text-transform: uppercase; }
+  .reserva { display: grid; grid-template-columns: 90px 1fr auto; gap: 6px 16px; align-items: center; padding: 14px 16px; margin-bottom: 8px; }
+  .reserva .hora-r { font-family: var(--f-titulo); font-size: 1.25rem; color: var(--verde-800); }
+  .reserva .quien b { display: block; }
+  .reserva .quien small { color: var(--tinta-suave); }
+  .reserva .der { display: flex; flex-direction: column; gap: 8px; align-items: end; }
+  .reserva .acciones { display: flex; gap: 6px; flex-wrap: wrap; justify-content: end; }
+  .reserva .extra { grid-column: 2 / -1; font-size: .85rem; color: var(--tinta-suave); }
+  @media (max-width: 640px) {
+    .reserva { grid-template-columns: 70px 1fr; }
+    .reserva .der { grid-column: 1 / -1; align-items: start; }
+    .reserva .acciones { justify-content: start; }
+  }
+
+  /* mesas */
+  .mesas { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .mesa-c { padding: 16px; display: grid; gap: 10px; justify-items: center; text-align: center; }
+  .mesa-c.inactiva { opacity: .55; }
+  .mesa-c img { width: 140px; height: 140px; background: #fff; border-radius: 12px; padding: 6px; }
+  .mesa-c b { font-family: var(--f-titulo); font-size: 1.2rem; }
+  .mesa-c code { font-size: .72rem; color: var(--tinta-suave); word-break: break-all; }
+  .mesa-c .acciones { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+
+  /* menú */
+  .menu-admin { display: grid; gap: 18px; }
+  .menu-admin section { padding: 16px 18px; }
+  .menu-admin h3 { font-size: 1.2rem; margin-bottom: 8px; }
+  .pl { display: grid; grid-template-columns: 1fr 110px auto; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--crema-200); }
+  .pl small { display: block; color: var(--tinta-suave); font-size: .8rem; }
+  .pl .input { min-height: 40px; padding: .4rem .6rem; }
+  .interruptor { position: relative; width: 52px; height: 30px; flex: none; }
+  .interruptor input { position: absolute; opacity: 0; inset: 0; cursor: pointer; margin: 0; z-index: 1; }
+  .interruptor span { position: absolute; inset: 0; border-radius: 999px; background: var(--crema-300); transition: background .15s; }
+  .interruptor span::after { content: ''; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; transition: transform .15s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+  .interruptor input:checked + span { background: var(--verde-600); }
+  .interruptor input:checked + span::after { transform: translateX(22px); }
+  .interruptor input:focus-visible + span { outline: 3px solid var(--miel-500); outline-offset: 2px; }
+
+  .hoja .contenido { padding: 22px 20px calc(22px + env(safe-area-inset-bottom)); display: grid; gap: 14px; }
+  .hoja h2 { font-size: 1.4rem; }
+  .rejilla-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+</style>
+</head>
+<body>
+
+<div id="acceso" class="acceso" hidden>
+  <div class="tarjeta">
+    <span id="marca-acceso" style="color:var(--verde-800)"></span>
+    <h1>Panel del personal</h1>
+    <p style="color:var(--tinta-suave)">Ingresa tu PIN</p>
+    <div class="puntos" id="puntos" aria-live="polite"></div>
+    <div class="teclado" id="teclado"></div>
+  </div>
+</div>
+
+<div id="panel" hidden>
+  <header class="barra">
+    <div class="envoltura">
+      <div class="fila">
+        <span id="marca"></span>
+        <div class="segmento" id="sucursales" role="group" aria-label="Sucursal"></div>
+        <span class="espacio"></span>
+        <span class="en-vivo" id="en-vivo"><i></i><span>Conectando…</span></span>
+        <button class="btn btn-icono" id="sonido" type="button" aria-label="Sonido de avisos" title="Sonido de avisos"></button>
+        <button class="btn btn-icono" id="salir" type="button" aria-label="Cerrar sesión" title="Cerrar sesión"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg></button>
+      </div>
+      <nav class="pestanas" role="tablist">
+        <button role="tab" data-v="pedidos" aria-selected="true">Pedidos <span class="burbuja" id="b-pedidos" hidden></span></button>
+        <button role="tab" data-v="reservas">Reservas <span class="burbuja" id="b-reservas" hidden></span></button>
+        <button role="tab" data-v="cabana">Casa Alpina <span class="burbuja" id="b-cabana" hidden></span></button>
+        <button role="tab" data-v="mesas">Mesas y QR</button>
+        <button role="tab" data-v="menu">Menú</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="envoltura">
+    <section class="vista" id="v-pedidos">
+      <div class="metricas" id="metricas"></div>
+      <div class="llamadas" id="llamadas"></div>
+      <div class="tablero" id="tablero"></div>
+      <details class="historial"><summary>Pedidos cerrados de hoy</summary><div id="cerrados" style="margin-top:12px"></div></details>
+    </section>
+
+    <section class="vista" id="v-reservas" hidden>
+      <div class="cabecera-vista">
+        <h2>Reservas de mesa</h2>
+        <div class="filtros">
+          <select class="input" id="r-rango"><option value="hoy">Hoy</option><option value="7">Próximos 7 días</option><option value="30">Próximos 30 días</option><option value="pend">Pendientes de pago</option></select>
+          <button class="btn btn-sm" type="button" id="r-nueva">+ Nueva reserva</button>
+        </div>
+      </div>
+      <div id="lista-reservas"></div>
+    </section>
+
+    <section class="vista" id="v-cabana" hidden>
+      <div class="cabecera-vista">
+        <h2>Casa Alpina</h2>
+        <div class="filtros">
+          <select class="input" id="c-rango"><option value="60">Próximos 60 días</option><option value="pend">Pendientes de pago</option><option value="todo">Todas</option></select>
+          <button class="btn btn-sm" type="button" id="c-nueva">+ Nueva reserva</button>
+        </div>
+      </div>
+      <div id="lista-cabana"></div>
+    </section>
+
+    <section class="vista" id="v-mesas" hidden>
+      <div class="cabecera-vista">
+        <h2>Mesas y códigos QR</h2>
+        <div class="filtros">
+          <button class="btn btn-sm btn-linea" type="button" id="m-imprimir">Imprimir QR</button>
+          <button class="btn btn-sm" type="button" id="m-nueva">+ Agregar mesa</button>
+        </div>
+      </div>
+      <p class="ayuda" style="color:var(--tinta-suave);margin-bottom:14px">Graba la misma dirección de cada mesa en su etiqueta NFC (tipo URL) con una app como NFC Tools. Si generas un código nuevo, el QR y la etiqueta anteriores dejan de funcionar.</p>
+      <div class="mesas" id="mesas"></div>
+    </section>
+
+    <section class="vista" id="v-menu" hidden>
+      <div class="cabecera-vista"><h2>Disponibilidad y precios</h2><p style="color:var(--tinta-suave);font-size:.9rem;max-width:52ch">Apaga un platillo cuando se agote: desaparece la opción de pedirlo al instante. Los precios por opción (copa/pichel, 8/12 oz…) se editan en <code>data/menu.js</code>.</p></div>
+      <div class="menu-admin" id="menu-admin"></div>
+    </section>
+  </main>
+</div>
+
+<div class="hoja" id="hoja" role="dialog" aria-modal="true" aria-hidden="true"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.min.js"></script>
+<script src="js/comun.js"></script>
+<script src="js/personal.js"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menú · Entre Montañas</title>
+<meta name="theme-color" content="#2b3524">
+<link rel="icon" href="img/icono.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  body { padding-bottom: 110px; }
+  .barra { background: var(--verde-800); color: var(--crema-50); padding: 14px 0 0; }
+  .barra .fila { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+  .barra .marca svg { width: 34px; height: 26px; }
+  .barra .marca b { font-size: 1.02rem; }
+  .pill-mesa { display: inline-flex; align-items: center; gap: .45rem; background: rgba(246,240,228,.12); border: 1px solid rgba(246,240,228,.2); padding: .35rem .8rem; border-radius: 999px; font-weight: 600; font-size: .88rem; white-space: nowrap; }
+  .pill-mesa i { width: 8px; height: 8px; border-radius: 50%; background: var(--miel-500); }
+  .bienvenida { padding: 22px 0 20px; }
+  .bienvenida h1 { color: var(--crema-50); font-size: clamp(1.6rem, 6vw, 2.2rem); font-weight: 500; }
+  .bienvenida p { color: var(--verde-300); margin-top: .35rem; }
+  .botones-mesa { display: flex; gap: .5rem; margin-top: 1rem; flex-wrap: wrap; }
+  .botones-mesa .btn { background: rgba(246,240,228,.1); border-color: rgba(246,240,228,.25); color: var(--crema-50); }
+  .botones-mesa .btn:hover { background: rgba(246,240,228,.18); }
+  .botones-mesa .btn.con-pedidos { background: var(--miel-500); color: var(--verde-900); border-color: transparent; }
+
+  .tabs { position: sticky; top: 0; z-index: 20; background: var(--crema-100); border-bottom: 1px solid var(--crema-300); }
+  .tabs nav { display: flex; gap: 6px; overflow-x: auto; padding: 10px 16px; scrollbar-width: none; max-width: 1120px; margin: 0 auto; }
+  .tabs nav::-webkit-scrollbar { display: none; }
+  .tabs a { flex: none; padding: .45rem .9rem; border-radius: 999px; text-decoration: none; color: var(--verde-700); font-weight: 600; font-size: .9rem; border: 1px solid var(--crema-300); background: var(--crema-50); }
+  .tabs a.activa { background: var(--verde-800); color: var(--crema-50); border-color: var(--verde-800); }
+
+  .aviso-desayuno { margin: 16px auto 0; background: var(--miel-100); color: var(--verde-800); border-radius: var(--radio); padding: 12px 16px; font-size: .92rem; display: flex; gap: .6rem; align-items: center; }
+  .aviso-vista { margin: 16px auto 0; background: var(--verde-100); border-radius: var(--radio); padding: 14px 16px; font-size: .92rem; color: var(--verde-800); }
+
+  .categoria { padding-top: 30px; scroll-margin-top: 64px; }
+  .categoria > h2 { font-size: 1.7rem; }
+  .categoria > p { color: var(--tinta-suave); font-size: .92rem; margin-top: .25rem; }
+  .lista { display: grid; gap: 12px; margin-top: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr)); }
+
+  .item { display: flex; gap: 14px; align-items: stretch; text-align: left; width: 100%; background: var(--crema-50); border: 1px solid transparent; border-radius: var(--radio-lg); padding: 14px; box-shadow: var(--sombra); cursor: pointer; transition: border-color .15s, transform .12s; }
+  .item:hover { border-color: var(--verde-300); }
+  .item:active { transform: scale(.99); }
+  .item .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .3rem; }
+  .item h3 { font-family: var(--f-texto); font-size: 1.02rem; font-weight: 700; color: var(--tinta); }
+  .item p { color: var(--tinta-suave); font-size: .88rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .item .abajo { margin-top: auto; padding-top: .3rem; display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+  .item .precio { font-weight: 700; color: var(--verde-700); }
+  .item .precio small { font-weight: 500; color: var(--tinta-suave); }
+  .item .foto { width: 108px; height: 108px; flex: none; border-radius: 16px; object-fit: cover; background: var(--crema-200); }
+  .item .mas { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--verde-800); color: var(--crema-50); font-size: 1.3rem; line-height: 1; }
+  .item .cant-en-carrito { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; background: var(--miel-500); color: var(--verde-900); font-size: .75rem; font-weight: 800; margin-left: .35rem; vertical-align: 2px; }
+  .item[aria-disabled="true"] { opacity: .55; cursor: not-allowed; }
+  .item .agotado { font-size: .75rem; font-weight: 700; color: var(--arcilla); text-transform: uppercase; letter-spacing: .08em; }
+
+  /* barra flotante del carrito */
+  .flotante { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: linear-gradient(0deg, var(--crema-100) 70%, rgba(246,240,228,0)); transform: translateY(120%); transition: transform .25s; }
+  .flotante.visible { transform: none; }
+  .flotante .btn { width: min(560px, 100%); margin: 0 auto; display: flex; justify-content: space-between; min-height: 56px; box-shadow: var(--sombra-alta); padding: 0 1.1rem 0 .7rem; }
+  .flotante .cuenta { display: grid; place-items: center; min-width: 32px; height: 32px; border-radius: 50%; background: var(--miel-500); color: var(--verde-900); font-weight: 800; }
+
+  /* hoja de platillo */
+  .hoja .cab-img { width: 100%; aspect-ratio: 16/10; object-fit: cover; background: var(--crema-200); }
+  .hoja .cuerpo { padding: 20px 20px 0; display: grid; gap: 18px; }
+  .hoja .cuerpo > header h2 { font-size: 1.55rem; }
+  .hoja .cuerpo > header p { color: var(--tinta-suave); margin-top: .35rem; }
+  .cerrar { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(252,249,243,.92); display: grid; place-items: center; cursor: pointer; box-shadow: var(--sombra); z-index: 2; }
+  .grupo h4 { font-family: var(--f-texto); font-size: .95rem; font-weight: 700; color: var(--tinta); display: flex; justify-content: space-between; align-items: center; margin-bottom: .6rem; }
+  .grupo h4 small { font-weight: 600; font-size: .78rem; padding: .15rem .55rem; border-radius: 999px; background: var(--crema-200); color: var(--tinta-suave); }
+  .grupo h4 small.ok { background: #dfeedd; color: #2f6b34; }
+  .opciones { display: grid; gap: 8px; }
+  .opcion { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .75rem .9rem; border-radius: 14px; border: 1.5px solid var(--crema-300); background: var(--crema-50); cursor: pointer; min-height: 50px; }
+  .opcion:has(input:checked) { border-color: var(--verde-700); background: var(--verde-100); }
+  .opcion input { accent-color: var(--verde-800); width: 18px; height: 18px; margin: 0; }
+  .opcion .izq { display: flex; align-items: center; gap: .7rem; }
+  .opcion .px { color: var(--tinta-suave); font-weight: 600; font-size: .9rem; }
+  .contador { display: inline-flex; align-items: center; gap: .2rem; }
+  .contador button { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--verde-300); background: var(--crema-50); font-size: 1.15rem; font-weight: 700; color: var(--verde-800); cursor: pointer; display: grid; place-items: center; }
+  .contador button:disabled { opacity: .35; cursor: not-allowed; }
+  .contador output { min-width: 28px; text-align: center; font-weight: 700; }
+  .pie-hoja { position: sticky; bottom: 0; padding: 16px 20px calc(16px + env(safe-area-inset-bottom)); background: var(--crema-50); display: flex; gap: 12px; align-items: center; border-top: 1px solid var(--crema-200); margin-top: 20px; }
+  .pie-hoja .btn { flex: 1; min-height: 52px; justify-content: space-between; }
+
+  /* carrito */
+  .titulo-hoja { padding: 18px 20px 4px; display: flex; justify-content: space-between; align-items: center; }
+  .titulo-hoja h2 { font-size: 1.5rem; }
+  .titulo-hoja .cerrar { position: static; box-shadow: none; background: var(--crema-200); }
+  .lineas { padding: 4px 20px; display: grid; }
+  .linea { display: grid; grid-template-columns: 1fr auto; gap: .3rem .9rem; padding: 14px 0; border-bottom: 1px solid var(--crema-200); }
+  .linea b { font-weight: 700; }
+  .linea .det { color: var(--tinta-suave); font-size: .85rem; grid-column: 1; }
+  .linea .px { font-weight: 700; text-align: right; }
+  .linea .contador { grid-column: 2; justify-self: end; }
+  .total { display: flex; justify-content: space-between; padding: 16px 20px 0; font-size: 1.15rem; font-weight: 700; }
+  .total span:last-child { font-family: var(--f-titulo); font-size: 1.5rem; color: var(--verde-800); }
+
+  /* mis pedidos */
+  .pedido { margin: 0 20px 12px; padding: 16px; border-radius: 16px; background: var(--crema-100); }
+  .pedido header { display: flex; justify-content: space-between; align-items: center; gap: .5rem; margin-bottom: .6rem; }
+  .pedido ul { margin: 0; padding-left: 1.1rem; color: var(--tinta-suave); font-size: .9rem; }
+  .progreso { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
+  .progreso span { height: 6px; border-radius: 3px; background: var(--crema-300); }
+  .progreso span.hecho { background: var(--verde-600); }
+  .progreso-txt { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; font-size: .7rem; color: var(--tinta-suave); margin-top: 4px; }
+
+  .exito { padding: 36px 24px 28px; text-align: center; display: grid; gap: 12px; justify-items: center; }
+  .exito .sello { width: 76px; height: 76px; border-radius: 50%; background: var(--verde-100); color: var(--verde-700); display: grid; place-items: center; }
+  .exito h2 { font-size: 1.7rem; }
+  .exito p { color: var(--tinta-suave); max-width: 32ch; }
+
+  .accion-grande { display: flex; gap: 14px; align-items: center; padding: 16px; border-radius: 16px; border: 1.5px solid var(--crema-300); background: var(--crema-50); cursor: pointer; width: 100%; text-align: left; }
+  .accion-grande:hover { border-color: var(--verde-600); }
+  .accion-grande i { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: var(--verde-100); color: var(--verde-700); flex: none; }
+  .accion-grande b { display: block; }
+  .accion-grande small { color: var(--tinta-suave); }
+
+  .error-mesa { padding: 80px 24px; text-align: center; display: grid; gap: 14px; justify-items: center; }
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <div class="envoltura">
+    <div class="fila"><span id="marca"></span><span id="pill-mesa"></span></div>
+    <div class="bienvenida" id="bienvenida"></div>
+  </div>
+</header>
+
+<div class="tabs"><nav id="tabs" aria-label="Categorías del menú"></nav></div>
+
+<main class="envoltura" id="menu"><p style="padding:40px 0;color:var(--tinta-suave)">Cargando el menú…</p></main>
+
+<div class="flotante" id="flotante">
+  <button class="btn" id="btn-carrito" type="button">
+    <span style="display:flex;align-items:center;gap:.7rem"><span class="cuenta" id="flot-cant">0</span>Ver mi pedido</span>
+    <span id="flot-total">Q0.00</span>
+  </button>
+</div>
+
+<!-- Hoja de platillo -->
+<div class="hoja" id="hoja-platillo" role="dialog" aria-modal="true" aria-labelledby="hp-titulo" aria-hidden="true"></div>
+<!-- Carrito -->
+<div class="hoja" id="hoja-carrito" role="dialog" aria-modal="true" aria-labelledby="hc-titulo" aria-hidden="true"></div>
+<!-- Mis pedidos -->
+<div class="hoja" id="hoja-pedidos" role="dialog" aria-modal="true" aria-labelledby="hpe-titulo" aria-hidden="true"></div>
+<!-- Servicio -->
+<div class="hoja" id="hoja-servicio" role="dialog" aria-modal="true" aria-labelledby="hs-titulo" aria-hidden="true"></div>
+
+<script src="js/comun.js"></script>
+<script src="js/mesa.js"></script>
+</body>
+</html>

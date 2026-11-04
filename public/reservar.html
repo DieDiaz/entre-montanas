@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reservar mesa · Entre Montañas</title>
+<meta name="theme-color" content="#2b3524">
+<link rel="icon" href="img/icono.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/reservas.css">
+</head>
+<body>
+
+<header class="cab-res">
+  <div class="envoltura">
+    <div class="fila"><span id="marca"></span><a class="btn btn-sm btn-claro" href="cabana.html">Casa Alpina</a></div>
+    <span class="etiqueta-sec">Reservaciones</span>
+    <h1>Reserva tu mesa</h1>
+    <p>Elige sucursal, día y hora. Confirmamos tu reserva con un depósito de <strong id="dep-txt">Q250</strong> que queda como saldo a favor en tu consumo.</p>
+  </div>
+</header>
+
+<main class="envoltura disposicion" id="app">
+  <form class="tarjeta formulario" id="form" novalidate>
+    <fieldset>
+      <legend><i>1</i> Sucursal</legend>
+      <div class="sucursales-op" id="sucursales"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend><i>2</i> ¿Cuántas personas?</legend>
+      <div class="personas">
+        <span class="contador"><button type="button" data-p="-1" aria-label="Menos personas">−</button><output id="personas">2</output><button type="button" data-p="1" aria-label="Más personas">+</button></span>
+        <span class="ayuda" id="personas-txt">personas</span>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend><i>3</i> Día</legend>
+      <div class="dias" id="dias" role="radiogroup" aria-label="Día de la reserva"></div>
+      <label class="otra-fecha">¿Otra fecha? <input type="date" class="input" id="fecha-libre"></label>
+    </fieldset>
+
+    <fieldset>
+      <legend><i>4</i> Hora</legend>
+      <div class="horas" id="horas" role="radiogroup" aria-label="Hora de la reserva"><p class="ayuda">Elige primero un día.</p></div>
+    </fieldset>
+
+    <fieldset>
+      <legend><i>5</i> Tus datos</legend>
+      <div class="rejilla-2">
+        <label class="campo"><span>Nombre completo</span><input class="input" name="nombre" autocomplete="name" required maxlength="80"></label>
+        <label class="campo"><span>Teléfono / WhatsApp</span><input class="input" name="telefono" type="tel" autocomplete="tel" inputmode="tel" required placeholder="5555 5555" maxlength="20"></label>
+      </div>
+      <label class="campo"><span>Correo <small>(opcional)</small></span><input class="input" name="correo" type="email" autocomplete="email" maxlength="120"></label>
+      <label class="campo"><span>¿Alguna ocasión especial o petición? <small>(opcional)</small></span><textarea class="input" name="nota" maxlength="400" placeholder="Cumpleaños, silla para bebé, mesa con vista…"></textarea></label>
+    </fieldset>
+  </form>
+
+  <aside class="resumen tarjeta" aria-live="polite">
+    <h2>Resumen</h2>
+    <dl id="resumen"></dl>
+    <div class="deposito">
+      <span>Depósito para confirmar</span><b id="dep-monto">Q250.00</b>
+      <small>Queda como saldo a favor en tu consumo.</small>
+    </div>
+    <button class="btn btn-miel btn-bloque" type="submit" form="form" id="enviar">Solicitar reserva</button>
+    <p class="letra-chica">Tu reserva queda <b>pendiente</b> hasta que recibamos el depósito por transferencia.</p>
+  </aside>
+</main>
+
+<script src="js/comun.js"></script>
+<script>
+document.getElementById('marca').innerHTML = marcaHTML('Reservaciones');
+const $ = (s) => document.querySelector(s);
+const st = { sucursal: new URLSearchParams(location.search).get('sucursal'), personas: 2, fecha: null, hora: null };
+let INFO;
+
+(async () => {
+  INFO = await api('/api/info');
+  const cfg = INFO.reservaMesa;
+  $('#dep-txt').textContent = fmtQ(cfg.deposito).replace('.00', '');
+  $('#dep-monto').textContent = fmtQ(cfg.deposito);
+  if (!INFO.sucursales.some((s) => s.id === st.sucursal)) st.sucursal = INFO.sucursales[0].id;
+
+  $('#sucursales').innerHTML = INFO.sucursales.map((s) => `
+    <label class="suc-op"><input type="radio" name="sucursal" value="${s.id}" ${s.id === st.sucursal ? 'checked' : ''}>
+      <b>${esc(s.nombre)}</b><small>${esc(s.horarioTexto)}</small></label>`).join('');
+  $('#fecha-libre').min = INFO.hoy;
+  $('#fecha-libre').max = sumarDias(INFO.hoy, cfg.diasAnticipacion);
+  pintarDias();
+  pintarResumen();
+})().catch((e) => aviso(e.message, 'error'));
+
+const suc = () => INFO.sucursales.find((s) => s.id === st.sucursal);
+const abiertoEl = (fecha) => !!suc().horario[fechaD(fecha).getUTCDay()];
+
+function pintarDias() {
+  const dias = Array.from({ length: 14 }, (_, i) => sumarDias(INFO.hoy, i));
+  if (st.fecha && !dias.includes(st.fecha)) dias.push(st.fecha);
+  $('#dias').innerHTML = dias.map((f, i) => {
+    const d = fechaD(f);
+    const abre = abiertoEl(f);
+    return `<button type="button" role="radio" class="dia" data-f="${f}" aria-checked="${st.fecha === f}" ${abre ? '' : 'disabled title="Cerrado"'}>
+      <small>${i === 0 ? 'Hoy' : i === 1 ? 'Mañana' : DIAS[d.getUTCDay()].slice(0, 3)}</small><b>${d.getUTCDate()}</b><small>${abre ? MESES[d.getUTCMonth()].slice(0, 3) : 'cerrado'}</small></button>`;
+  }).join('');
+}
+
+async function pintarHoras() {
+  const cont = $('#horas');
+  if (!st.fecha) return;
+  cont.innerHTML = '<p class="ayuda">Buscando horarios…</p>';
+  try {
+    const r = await api(`/api/reservas/horarios?sucursal=${st.sucursal}&fecha=${st.fecha}`);
+    if (!r.horas.includes(st.hora)) st.hora = null;
+    cont.innerHTML = r.horas.length
+      ? r.horas.map((h) => `<button type="button" role="radio" class="hora" data-h="${h}" aria-checked="${st.hora === h}">${hora12(h)}</button>`).join('')
+      : `<p class="ayuda">${esc(r.motivo || 'Sin horarios.')}</p>`;
+  } catch (e) { cont.innerHTML = `<p class="ayuda">${esc(e.message)}</p>`; }
+  pintarResumen();
+}
+
+function pintarResumen() {
+  const fila = (k, v) => `<div><dt>${k}</dt><dd>${v || '<span class="falta">Por elegir</span>'}</dd></div>`;
+  $('#resumen').innerHTML = fila('Sucursal', esc(suc()?.nombre)) +
+    fila('Día', st.fecha && fechaLarga(st.fecha)) + fila('Hora', st.hora && hora12(st.hora)) +
+    fila('Personas', `${st.personas}`);
+  $('#personas').textContent = st.personas;
+  $('#personas-txt').textContent = st.personas === 1 ? 'persona' : 'personas';
+}
+
+document.addEventListener('click', (e) => {
+  const p = e.target.closest('[data-p]');
+  if (p) { st.personas = Math.min(INFO.reservaMesa.maxPersonas, Math.max(1, st.personas + Number(p.dataset.p))); pintarResumen(); }
+  const d = e.target.closest('.dia');
+  if (d) { st.fecha = d.dataset.f; pintarDias(); pintarHoras(); }
+  const h = e.target.closest('.hora');
+  if (h) { st.hora = h.dataset.h; document.querySelectorAll('.hora').forEach((b) => b.setAttribute('aria-checked', b === h)); pintarResumen(); }
+});
+$('#sucursales').addEventListener('change', (e) => {
+  st.sucursal = e.target.value;
+  if (st.fecha && !abiertoEl(st.fecha)) st.fecha = null;
+  pintarDias(); st.fecha ? pintarHoras() : ($('#horas').innerHTML = '<p class="ayuda">Elige primero un día.</p>');
+  pintarResumen();
+});
+$('#fecha-libre').addEventListener('change', (e) => {
+  if (!e.target.value) return;
+  st.fecha = e.target.value; pintarDias(); pintarHoras();
+});
+
+$('#form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!st.fecha) return aviso('Elige el día de tu reserva.', 'error');
+  if (!st.hora) return aviso('Elige la hora de tu reserva.', 'error');
+  const f = new FormData($('#form'));
+  const datos = { sucursal: st.sucursal, fecha: st.fecha, hora: st.hora, personas: st.personas,
+    nombre: f.get('nombre'), telefono: f.get('telefono'), correo: f.get('correo'), nota: f.get('nota') };
+  const b = $('#enviar');
+  b.disabled = true; b.textContent = 'Enviando…';
+  try {
+    const r = await api('/api/reservas/mesa', { metodo: 'POST', datos });
+    confirmar(r);
+  } catch (err) {
+    aviso(err.message, 'error');
+    if (err.status === 409) pintarHoras();
+  } finally { b.disabled = false; b.textContent = 'Solicitar reserva'; }
+});
+
+function confirmar(r) {
+  const s = INFO.sucursales.find((x) => x.id === r.sucursal);
+  const msg = `Hola, adjunto el comprobante del depósito de ${fmtQ(r.aPagar)} para mi reserva ${r.codigo}: ${s.nombre}, ${fechaLarga(r.fecha)} a las ${hora12(r.hora)}, ${r.personas} personas. A nombre de ${r.nombre}.`;
+  $('#app').innerHTML = `
+    <section class="tarjeta confirmacion">
+      <span class="estado e-pendiente">Pendiente de depósito</span>
+      <h2>¡Gracias, ${esc(r.nombre.split(' ')[0])}! Tu reserva está casi lista</h2>
+      <p class="codigo">Código <b>${r.codigo}</b></p>
+      <dl class="datos-conf">
+        <div><dt>Sucursal</dt><dd>${esc(s.nombre)}</dd></div>
+        <div><dt>Día</dt><dd>${fechaLarga(r.fecha)}</dd></div>
+        <div><dt>Hora</dt><dd>${hora12(r.hora)}</dd></div>
+        <div><dt>Personas</dt><dd>${r.personas}</dd></div>
+      </dl>
+      ${pagoHTML(INFO.pago, r.aPagar, r.codigo)}
+      <ol class="pasos-pago">
+        <li>Transfiere <b>${fmtQ(r.aPagar)}</b> a la cuenta de arriba.</li>
+        <li>Envíanos el comprobante por WhatsApp con tu código <b>${r.codigo}</b>.</li>
+        <li>Te confirmamos la reserva. El depósito queda como saldo a favor en tu consumo.</li>
+      </ol>
+      <div class="acciones-conf">
+        <a class="btn btn-miel" href="${linkWhatsApp(INFO.whatsapp, msg)}" target="_blank" rel="noopener">${ICONOS.wa} Enviar comprobante</a>
+        <a class="btn btn-linea" href="${s.waze}" target="_blank" rel="noopener">${ICONOS.waze} Cómo llegar</a>
+      </div>
+    </section>`;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

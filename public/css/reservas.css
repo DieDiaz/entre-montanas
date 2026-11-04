@@ -1,0 +1,80 @@
+/* Estilos compartidos por /reservar y /cabana */
+
+.cab-res { background: var(--verde-800); color: var(--crema-100); padding: 18px 0 120px; position: relative; overflow: hidden; }
+.cab-res::after { /* silueta de montañas */
+  content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 90px;
+  background: var(--crema-100);
+  clip-path: polygon(0 100%, 0 70%, 12% 38%, 22% 62%, 34% 22%, 47% 58%, 58% 34%, 70% 66%, 82% 30%, 92% 55%, 100% 40%, 100% 100%);
+}
+.cab-res .fila { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 40px; }
+.cab-res .marca { color: var(--crema-50); }
+.cab-res h1 { color: var(--crema-50); font-size: clamp(2.1rem, 6vw, 3.4rem); font-weight: 500; margin: .4rem 0 .7rem; }
+.cab-res p { max-width: 56ch; color: var(--verde-300); font-size: 1.05rem; }
+.cab-res p strong { color: var(--miel-100); }
+
+.disposicion { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; margin-top: -70px; position: relative; z-index: 2; }
+@media (max-width: 900px) { .disposicion { grid-template-columns: 1fr; } }
+
+.formulario { padding: clamp(18px, 4vw, 32px); display: grid; gap: 30px; }
+fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 14px; min-width: 0; }
+legend { font-family: var(--f-titulo); font-size: 1.3rem; font-weight: 600; color: var(--verde-800); display: flex; align-items: center; gap: .6rem; padding: 0; margin-bottom: 14px; }
+legend i { font-style: normal; font-family: var(--f-texto); font-size: .8rem; font-weight: 800; width: 26px; height: 26px; border-radius: 50%; background: var(--verde-800); color: var(--miel-100); display: grid; place-items: center; }
+.ayuda { color: var(--tinta-suave); font-size: .92rem; }
+.rejilla-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+
+.sucursales-op { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.suc-op { position: relative; display: grid; gap: .2rem; padding: 16px 16px 16px 48px; border-radius: 16px; border: 1.5px solid var(--crema-300); cursor: pointer; background: var(--crema-50); }
+.suc-op input { position: absolute; left: 16px; top: 18px; accent-color: var(--verde-800); width: 18px; height: 18px; margin: 0; }
+.suc-op:has(input:checked) { border-color: var(--verde-700); background: var(--verde-100); }
+.suc-op b { font-size: 1.05rem; }
+.suc-op small { color: var(--tinta-suave); font-size: .82rem; }
+
+.personas { display: flex; align-items: center; gap: 14px; }
+.contador { display: inline-flex; align-items: center; gap: .3rem; }
+.contador button { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--verde-300); background: var(--crema-50); font-size: 1.3rem; font-weight: 700; color: var(--verde-800); cursor: pointer; }
+.contador button:hover { background: var(--verde-100); }
+.contador output { min-width: 40px; text-align: center; font-family: var(--f-titulo); font-size: 1.6rem; }
+
+.dias { display: grid; grid-auto-flow: column; grid-auto-columns: 72px; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+.dia, .hora { border: 1.5px solid var(--crema-300); background: var(--crema-50); border-radius: 14px; cursor: pointer; transition: border-color .15s, background .15s; }
+.dia { display: grid; justify-items: center; padding: 10px 4px; line-height: 1.2; }
+.dia b { font-family: var(--f-titulo); font-size: 1.5rem; font-weight: 500; }
+.dia small { font-size: .72rem; color: var(--tinta-suave); text-transform: capitalize; }
+.dia:hover:not(:disabled), .hora:hover { border-color: var(--verde-600); }
+.dia[aria-checked="true"], .hora[aria-checked="true"] { background: var(--verde-800); border-color: var(--verde-800); color: var(--crema-50); }
+.dia[aria-checked="true"] small { color: var(--verde-300); }
+.dia:disabled { opacity: .45; cursor: not-allowed; background: var(--crema-200); }
+.otra-fecha { display: flex; align-items: center; gap: .7rem; font-size: .9rem; color: var(--tinta-suave); flex-wrap: wrap; }
+.otra-fecha .input { width: auto; min-height: 42px; padding: .4rem .7rem; }
+
+.horas { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.hora { min-height: 46px; font-weight: 600; }
+.horas > p { grid-column: 1 / -1; }
+
+.resumen { padding: 24px; position: sticky; top: 16px; display: grid; gap: 18px; }
+.resumen h2 { font-size: 1.35rem; }
+.resumen dl, .datos-conf { margin: 0; display: grid; gap: 10px; }
+.resumen dl > div, .datos-conf > div { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px dashed var(--crema-300); padding-bottom: 10px; }
+dt { color: var(--tinta-suave); }
+dd { margin: 0; font-weight: 600; text-align: right; }
+dd::first-letter { text-transform: uppercase; }
+.falta { color: var(--crema-300); font-weight: 500; }
+.deposito { background: var(--miel-100); border-radius: 16px; padding: 14px 16px; display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; }
+.deposito b { font-family: var(--f-titulo); font-size: 1.5rem; color: var(--verde-800); font-weight: 600; }
+.deposito small { grid-column: 1 / -1; color: var(--miel-600); }
+.letra-chica { font-size: .82rem; color: var(--tinta-suave); text-align: center; }
+
+.confirmacion { grid-column: 1 / -1; padding: clamp(22px, 5vw, 44px); display: grid; gap: 20px; max-width: 720px; margin: 0 auto; width: 100%; }
+.confirmacion h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); }
+.confirmacion .estado { justify-self: start; }
+.codigo { font-size: 1.05rem; }
+.codigo b { font-family: ui-monospace, 'Cascadia Mono', monospace; background: var(--verde-100); padding: .2rem .6rem; border-radius: 8px; letter-spacing: .08em; }
+.pago { background: var(--verde-800); color: var(--crema-100); border-radius: 18px; padding: 20px; }
+.pago h3 { color: var(--miel-100); font-size: 1.1rem; margin-bottom: 12px; }
+.pago dl { margin: 0; display: grid; gap: 8px; }
+.pago dl > div { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.pago dt { color: var(--verde-300); }
+.pago dd { color: var(--crema-50); }
+.copiar { margin-left: .4rem; border: 1px solid rgba(246,240,228,.35); background: transparent; color: var(--miel-100); border-radius: 999px; padding: .1rem .6rem; font-size: .75rem; font-weight: 700; cursor: pointer; }
+.pasos-pago { margin: 0; padding-left: 1.3rem; display: grid; gap: .5rem; }
+.acciones-conf { display: flex; gap: .7rem; flex-wrap: wrap; }

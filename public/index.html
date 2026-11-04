@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Entre Montañas · Restaurante</title>
+<meta name="description" content="Restaurante Entre Montañas en Amatitlán y Villa Canales. Desayunos, asados, parrilladas, mariscos y coctelería. Reserva tu mesa o la cabaña Casa Alpina.">
+<meta name="theme-color" content="#2b3524">
+<link rel="icon" href="img/icono.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  .cabecera { position: absolute; inset: 0 0 auto; z-index: 5; padding: 18px 0; color: var(--crema-50); }
+  .cabecera .envoltura { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .nav { display: flex; gap: 1.4rem; align-items: center; }
+  .nav a { color: inherit; text-decoration: none; font-weight: 600; font-size: .95rem; opacity: .92; }
+  .nav a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 5px; }
+  @media (max-width: 720px) { .nav .solo-escritorio { display: none; } }
+
+  .heroe { position: relative; min-height: min(92vh, 760px); display: grid; align-items: end; color: var(--crema-50); overflow: hidden; background: var(--verde-900); }
+  .heroe > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 55% 55%; }
+  .heroe::after { content: ''; position: absolute; inset: 0; background:
+      linear-gradient(180deg, rgba(30,38,25,.55) 0%, rgba(30,38,25,0) 28%),
+      linear-gradient(0deg, rgba(30,38,25,.92) 0%, rgba(30,38,25,.55) 42%, rgba(30,38,25,0) 75%); }
+  .heroe .envoltura { position: relative; z-index: 2; padding: 140px 0 64px; }
+  .heroe .etiqueta-sec { color: var(--miel-500); }
+  .heroe h1 { color: var(--crema-50); font-size: clamp(2.4rem, 7vw, 4.6rem); max-width: 13ch; margin: .6rem 0 1rem; font-weight: 500; }
+  .heroe h1 em { font-style: italic; color: var(--miel-100); }
+  .heroe p { max-width: 46ch; font-size: 1.1rem; color: var(--crema-200); }
+  .acciones { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.8rem; }
+
+  section { padding: 72px 0 0; }
+  .titulo-sec { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.6rem; flex-wrap: wrap; }
+  .titulo-sec h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); margin-top: .4rem; }
+
+  .carrusel { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(230px, 1fr); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; scrollbar-width: thin; }
+  .plato { scroll-snap-align: start; background: var(--crema-50); border-radius: var(--radio-lg); overflow: hidden; box-shadow: var(--sombra); }
+  .plato img { aspect-ratio: 4/3; width: 100%; object-fit: cover; background: var(--crema-200); }
+  .plato div { padding: 14px 16px 16px; display: flex; justify-content: space-between; gap: .5rem; align-items: baseline; }
+  .plato h3 { font-size: 1.1rem; }
+  .plato span { font-weight: 700; color: var(--miel-600); white-space: nowrap; }
+
+  .pasos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .paso { padding: 26px; }
+  .paso i { font-style: normal; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--verde-800); color: var(--miel-100); font-family: var(--f-titulo); font-size: 1.2rem; margin-bottom: 14px; }
+  .paso h3 { font-size: 1.2rem; margin-bottom: .35rem; }
+  .paso p { color: var(--tinta-suave); }
+
+  .sucursales { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .sucursal { padding: 28px; display: grid; gap: 14px; align-content: start; border-top: 5px solid var(--verde-600); }
+  .sucursal h3 { font-size: 1.6rem; }
+  .sucursal .dato { display: flex; gap: .6rem; color: var(--tinta-suave); }
+  .sucursal .dato svg { flex: none; margin-top: 3px; color: var(--verde-600); }
+  .sucursal .acciones { margin-top: 6px; }
+
+  .alpina { display: grid; grid-template-columns: 1.1fr 1fr; background: var(--verde-800); color: var(--crema-100); border-radius: var(--radio-lg); overflow: hidden; }
+  .alpina img { width: 100%; height: 100%; object-fit: cover; min-height: 280px; }
+  .alpina div { padding: clamp(24px, 5vw, 48px); display: grid; gap: 1rem; align-content: center; }
+  .alpina h2 { color: var(--crema-50); font-size: clamp(1.8rem, 4vw, 2.5rem); }
+  .alpina .precios { display: flex; gap: 2rem; flex-wrap: wrap; }
+  .alpina .precios b { display: block; font-family: var(--f-titulo); font-size: 1.8rem; color: var(--miel-500); font-weight: 500; }
+  .alpina .precios small { color: var(--verde-300); }
+  @media (max-width: 760px) { .alpina { grid-template-columns: 1fr; } }
+
+  .franja { margin-top: 16px; padding: 22px 26px; display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; background: var(--miel-100); border-radius: var(--radio-lg); }
+  .franja p { color: var(--verde-800); max-width: 60ch; }
+
+  .pie .envoltura { display: grid; gap: 28px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .pie h4 { color: var(--crema-100); font-family: var(--f-texto); font-size: .8rem; letter-spacing: .18em; text-transform: uppercase; margin-bottom: .7rem; }
+  .pie ul { list-style: none; padding: 0; margin: 0; display: grid; gap: .45rem; }
+  .pie .legal { grid-column: 1 / -1; border-top: 1px solid rgba(185,193,163,.2); padding-top: 18px; font-size: .82rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="envoltura">
+    <span id="marca"></span>
+    <nav class="nav" aria-label="Principal">
+      <a href="mesa.html">Menú</a>
+      <a href="reservar.html" class="solo-escritorio">Reservar</a>
+      <a href="cabana.html">Casa Alpina</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="heroe">
+    <img src="img/cabana/vista.jpg" alt="Vista al lago de Amatitlán y las montañas desde Casa Alpina">
+    <div class="envoltura">
+      <span class="etiqueta-sec">Amatitlán · Villa Canales</span>
+      <h1>Cocina casera <em>entre montañas</em> y lago</h1>
+      <p>Desayunos chapines, asados al carbón, parrilladas para compartir y coctelería, rodeados de naturaleza.</p>
+      <div class="acciones">
+        <a class="btn btn-miel" href="reservar.html">Reservar una mesa</a>
+        <a class="btn btn-claro" href="mesa.html">Ver el menú</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="envoltura" aria-labelledby="t-favoritos">
+    <div class="titulo-sec">
+      <div><span class="etiqueta-sec">De nuestra cocina</span><h2 id="t-favoritos">Los favoritos de la casa</h2></div>
+      <a class="btn btn-linea btn-sm" href="mesa.html">Menú completo</a>
+    </div>
+    <div class="carrusel" id="favoritos" aria-live="polite"></div>
+  </section>
+
+  <section class="envoltura" aria-labelledby="t-pedir">
+    <div class="titulo-sec"><div><span class="etiqueta-sec">En tu mesa</span><h2 id="t-pedir">Pide desde tu teléfono</h2></div></div>
+    <div class="pasos">
+      <article class="paso tarjeta"><i>1</i><h3>Escanea tu mesa</h3><p>Cada mesa tiene un código QR y una etiqueta NFC. Escanéalo o acerca tu teléfono.</p></article>
+      <article class="paso tarjeta"><i>2</i><h3>Elige con calma</h3><p>Mira fotos y precios, escoge guarniciones y deja notas para la cocina.</p></article>
+      <article class="paso tarjeta"><i>3</i><h3>Te lo llevamos</h3><p>Tu pedido llega directo a cocina. Sigue su estado y pide la cuenta desde el teléfono.</p></article>
+    </div>
+  </section>
+
+  <section class="envoltura" aria-labelledby="t-sucursales">
+    <div class="titulo-sec"><div><span class="etiqueta-sec">Visítanos</span><h2 id="t-sucursales">Nuestras sucursales</h2></div></div>
+    <div class="sucursales" id="sucursales"></div>
+    <div class="franja">
+      <p><strong>Reservaciones:</strong> se solicita un depósito previo de <strong>Q250</strong>, que queda como saldo a favor en tu consumo.</p>
+      <a class="btn btn-sm" href="reservar.html">Reservar mesa</a>
+    </div>
+  </section>
+
+  <section class="envoltura" aria-labelledby="t-alpina">
+    <div class="alpina">
+      <img src="img/cabana/comedor.jpg" alt="Comedor de Casa Alpina con mural de flores">
+      <div>
+        <span class="etiqueta-sec">Hospédate · Amatitlán</span>
+        <h2 id="t-alpina">Casa Alpina</h2>
+        <p>Una cabaña tipo A con vista al lago para 2 a 4 personas: cama matrimonial, sofá cama, aire acondicionado, WiFi y 2 desayunos incluidos.</p>
+        <div class="precios">
+          <span><b>Q500</b><small>por noche · lunes a jueves</small></span>
+          <span><b>Q650</b><small>por noche · viernes a domingo</small></span>
+        </div>
+        <div><a class="btn btn-miel" href="cabana.html">Ver fechas disponibles</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pie">
+  <div class="envoltura">
+    <div><span id="marca-pie"></span><p style="margin-top:14px">Comida casera, naturaleza y buena compañía.</p></div>
+    <div><h4>Contacto</h4><ul>
+      <li><a id="wa-pie" href="#">WhatsApp +502 3978 8113</a></li>
+      <li>Parqueo público afuera de ambos restaurantes</li>
+    </ul></div>
+    <div><h4>Explora</h4><ul>
+      <li><a href="mesa.html">Menú</a></li><li><a href="reservar.html">Reservar mesa</a></li><li><a href="cabana.html">Casa Alpina</a></li>
+    </ul></div>
+    <div class="legal"><span>© <span id="anio"></span> Restaurante Entre Montañas S.A.</span><a href="personal.html">Acceso del personal</a></div>
+  </div>
+</footer>
+
+<script src="js/comun.js"></script>
+<script>
+  document.getElementById('marca').innerHTML = marcaHTML();
+  document.getElementById('marca-pie').innerHTML = marcaHTML();
+  document.getElementById('anio').textContent = new Date().getFullYear();
+
+  (async () => {
+    const info = await api('/api/info');
+    document.getElementById('wa-pie').href = linkWhatsApp(info.whatsapp, 'Hola, quisiera información de Entre Montañas.');
+    document.getElementById('sucursales').innerHTML = info.sucursales.map((s) => `
+      <article class="sucursal tarjeta">
+        <span class="etiqueta-sec">Sucursal</span>
+        <h3>${esc(s.nombre)}</h3>
+        <p class="dato">${ICONOS.waze}<span>${esc(s.direccion)}</span></p>
+        <p class="dato">${ICONOS.reloj}<span>${esc(s.horarioTexto)}</span></p>
+        <div class="acciones">
+          <a class="btn btn-sm" href="reservar.html?sucursal=${s.id}">Reservar aquí</a>
+          <a class="btn btn-linea btn-sm" href="${s.waze}" target="_blank" rel="noopener">${ICONOS.waze} Abrir en Waze</a>
+        </div>
+      </article>`).join('');
+
+    const { categorias } = await api('/api/menu');
+    const destacados = categorias.flatMap((c) => c.platillos).filter((p) => p.destacado && p.imagen);
+    document.getElementById('favoritos').innerHTML = destacados.map((p) => `
+      <a class="plato" href="mesa.html#${p.categoria}" style="text-decoration:none;color:inherit">
+        <img src="${p.imagen}" alt="" loading="lazy">
+        <div><h3>${esc(p.nombre)}</h3><span>${fmtQ(p.precio)}</span></div>
+      </a>`).join('');
+  })().catch((e) => aviso(e.message, 'error'));
+</script>
+</body>
+</html>

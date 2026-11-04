@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casa Alpina · Entre Montañas</title>
+<meta name="description" content="Cabaña Casa Alpina en Amatitlán, para 2 a 4 personas con vista al lago. Q500 por noche de lunes a jueves y Q650 de viernes a domingo.">
+<meta name="theme-color" content="#2b3524">
+<link rel="icon" href="img/icono.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/reservas.css">
+<style>
+  .cab-res { background: linear-gradient(0deg, rgba(30,38,25,.92), rgba(30,38,25,.45)), url('img/cabana/vista.jpg') center 55% / cover; padding-bottom: 150px; }
+  .galeria { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; border-radius: var(--radio-lg); overflow: hidden; height: clamp(260px, 42vw, 420px); }
+  .galeria img { width: 100%; height: 100%; object-fit: cover; }
+  .galeria img:first-child { grid-row: span 2; }
+  .info { padding: clamp(18px, 4vw, 30px); display: grid; gap: 22px; }
+  .info h2 { font-size: 1.5rem; }
+  .amenidades { display: flex; flex-wrap: wrap; gap: 8px; }
+  .no-incluye .chip { background: #f6e3dd; color: var(--arcilla); }
+  .horarios-cab { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .horarios-cab div { background: var(--crema-100); border-radius: 14px; padding: 12px 14px; }
+  .horarios-cab small { display: block; color: var(--tinta-suave); font-size: .8rem; }
+  .horarios-cab b { font-family: var(--f-titulo); font-size: 1.3rem; font-weight: 500; color: var(--verde-800); }
+
+  #form fieldset:first-child > div { max-width: 520px; }
+  .cal-cab { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .cal-cab h3 { font-size: 1.15rem; text-transform: capitalize; }
+  .cal-cab button { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--crema-300); background: var(--crema-50); cursor: pointer; font-size: 1.1rem; }
+  .cal-cab button:disabled { opacity: .35; cursor: not-allowed; }
+  .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal .sem { text-align: center; font-size: .72rem; font-weight: 700; color: var(--tinta-suave); text-transform: uppercase; padding: 4px 0; }
+  .cal button { aspect-ratio: 1 / 1.05; border: 0; border-radius: 12px; background: var(--crema-100); cursor: pointer; display: grid; place-content: center; gap: 1px; line-height: 1.1; padding: 0; min-width: 0; }
+  .cal button b { font-weight: 700; font-size: .95rem; }
+  .cal button small { font-size: .62rem; color: var(--tinta-suave); }
+  .cal button:hover:not(:disabled) { outline: 2px solid var(--verde-600); }
+  .cal button:disabled { background: transparent; color: var(--crema-300); cursor: not-allowed; }
+  .cal button:disabled small { color: var(--crema-300); }
+  .cal button.ocupada:disabled { background: repeating-linear-gradient(135deg, var(--crema-200) 0 4px, var(--crema-100) 4px 8px); color: var(--tinta-suave); text-decoration: line-through; }
+  .cal button.salida-ok { background: var(--crema-100); }
+  .cal button.rango { background: var(--verde-100); border-radius: 4px; }
+  .cal button.inicio, .cal button.fin { background: var(--verde-800); color: var(--crema-50); }
+  .cal button.inicio small, .cal button.fin small { color: var(--miel-100); }
+  .cal .vacio { visibility: hidden; }
+  .leyenda { display: flex; flex-wrap: wrap; gap: 14px; font-size: .8rem; color: var(--tinta-suave); margin-top: 10px; }
+  .leyenda i { display: inline-block; width: 12px; height: 12px; border-radius: 4px; vertical-align: -1px; margin-right: 4px; }
+  .noches { display: grid; gap: 6px; font-size: .9rem; }
+  .noches div { display: flex; justify-content: space-between; color: var(--tinta-suave); }
+</style>
+</head>
+<body>
+
+<header class="cab-res">
+  <div class="envoltura">
+    <div class="fila"><span id="marca"></span><a class="btn btn-sm btn-claro" href="reservar.html">Reservar mesa</a></div>
+    <span class="etiqueta-sec">Cabaña · Amatitlán</span>
+    <h1>Casa Alpina</h1>
+    <p>Despierta frente al lago de Amatitlán. Cabaña para 2 a 4 personas, a pasos del restaurante. <strong>Q500</strong> por noche de lunes a jueves y <strong>Q650</strong> de viernes a domingo.</p>
+  </div>
+</header>
+
+<main class="envoltura disposicion" id="app">
+  <div style="display:grid;gap:20px;min-width:0">
+    <div class="galeria">
+      <img src="img/cabana/hero.jpg" alt="Habitación con ventana panorámica al lago">
+      <img src="img/cabana/comedor.jpg" alt="Comedor con mural de flores">
+      <img src="img/cabana/sala.jpg" alt="Sala con sofá cama turquesa">
+    </div>
+
+    <form class="tarjeta formulario" id="form" novalidate>
+      <fieldset>
+        <legend><i>1</i> Elige tus fechas</legend>
+        <p class="ayuda" id="ayuda-cal">Toca el día de llegada y luego el día de salida.</p>
+        <div>
+          <div class="cal-cab"><button type="button" id="mes-ant" aria-label="Mes anterior">‹</button><h3 id="mes-titulo"></h3><button type="button" id="mes-sig" aria-label="Mes siguiente">›</button></div>
+          <div class="cal" id="cal"></div>
+          <div class="leyenda"><span><i style="background:var(--verde-800)"></i>Tu estadía</span><span><i style="background:repeating-linear-gradient(135deg,var(--crema-300) 0 3px,var(--crema-100) 3px 6px)"></i>Ocupada</span><span>Precio por noche</span></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><i>2</i> Huéspedes</legend>
+        <div class="personas">
+          <span class="contador"><button type="button" data-p="-1" aria-label="Menos huéspedes">−</button><output id="personas">2</output><button type="button" data-p="1" aria-label="Más huéspedes">+</button></span>
+          <span class="ayuda">máximo <span id="cap-max">4</span> personas · mismo precio</span>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><i>3</i> Tus datos</legend>
+        <div class="rejilla-2">
+          <label class="campo"><span>Nombre completo</span><input class="input" name="nombre" autocomplete="name" required maxlength="80"></label>
+          <label class="campo"><span>Teléfono / WhatsApp</span><input class="input" name="telefono" type="tel" autocomplete="tel" inputmode="tel" required placeholder="5555 5555" maxlength="20"></label>
+        </div>
+        <label class="campo"><span>Correo <small>(opcional)</small></span><input class="input" name="correo" type="email" autocomplete="email" maxlength="120"></label>
+        <label class="campo"><span>Comentarios <small>(opcional)</small></span><textarea class="input" name="nota" maxlength="400" placeholder="Hora aproximada de llegada, aniversario…"></textarea></label>
+      </fieldset>
+    </form>
+
+    <section class="tarjeta info" aria-labelledby="t-info">
+      <h2 id="t-info">Lo que necesitas saber</h2>
+      <div class="horarios-cab" id="horarios-cab"></div>
+      <div><h3 style="font-size:1.05rem;margin-bottom:10px">Incluye</h3><div class="amenidades" id="incluye"></div></div>
+      <div class="no-incluye"><h3 style="font-size:1.05rem;margin-bottom:10px">No hay</h3><div class="amenidades" id="no-incluye"></div></div>
+      <p class="ayuda" id="politica"></p>
+    </section>
+  </div>
+
+  <aside class="resumen tarjeta" aria-live="polite">
+    <h2>Tu estadía</h2>
+    <dl id="resumen"></dl>
+    <div class="noches" id="noches"></div>
+    <div class="deposito"><span>Total a pagar</span><b id="total">—</b><small>Se confirma con el 100% del pago por transferencia.</small></div>
+    <button class="btn btn-miel btn-bloque" type="submit" form="form" id="enviar">Solicitar reserva</button>
+    <p class="letra-chica">No hay devolución si no llegas a tu reserva.</p>
+  </aside>
+</main>
+
+<script src="js/comun.js"></script>
+<script>
+document.getElementById('marca').innerHTML = marcaHTML('Casa Alpina');
+const $ = (s) => document.querySelector(s);
+const st = { entrada: null, salida: null, personas: 2, mes: null };
+let INFO, OCUP = new Set(), PRECIOS = {}, HOY, HASTA;
+
+(async () => {
+  INFO = await api('/api/info');
+  const c = INFO.cabana;
+  $('#cap-max').textContent = c.capacidadMax;
+  $('#horarios-cab').innerHTML = `
+    <div><small>Entrada</small><b>${hora12(c.checkIn)}</b></div>
+    <div><small>Salida (día siguiente)</small><b>${hora12(c.checkOut)}</b></div>
+    <div><small>Desayunos</small><b>2 incluidos</b></div>`;
+  $('#incluye').innerHTML = c.incluye.map((x) => `<span class="chip">${esc(x)}</span>`).join('');
+  $('#no-incluye').innerHTML = c.noIncluye.map((x) => `<span class="chip">${esc(x)}</span>`).join('');
+  $('#politica').textContent = c.politica;
+  await cargarOcupacion();
+  st.mes = HOY.slice(0, 7);
+  pintarCal(); pintarResumen();
+})().catch((e) => aviso(e.message, 'error'));
+
+async function cargarOcupacion() {
+  const r = await api('/api/cabana/ocupado');
+  OCUP = new Set(r.noches); PRECIOS = r.precioNoche; HOY = r.hoy; HASTA = r.hasta;
+}
+
+const nochesEntre = (a, b) => { const n = []; for (let d = a; d < b; d = sumarDias(d, 1)) n.push(d); return n; };
+const libre = (a, b) => nochesEntre(a, b).every((d) => !OCUP.has(d));
+
+function pintarCal() {
+  const [y, m] = st.mes.split('-').map(Number);
+  const primero = `${st.mes}-01`;
+  const diasMes = new Date(Date.UTC(y, m, 0)).getUTCDate();
+  const offset = (fechaD(primero).getUTCDay() + 6) % 7; // semana inicia lunes
+  $('#mes-titulo').textContent = `${MESES[m - 1]} ${y}`;
+  $('#mes-ant').disabled = st.mes <= HOY.slice(0, 7);
+  $('#mes-sig').disabled = st.mes >= HASTA.slice(0, 7);
+
+  let html = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'].map((d) => `<span class="sem">${d}</span>`).join('');
+  html += '<span class="vacio"></span>'.repeat(offset);
+  for (let d = 1; d <= diasMes; d++) {
+    const f = `${st.mes}-${String(d).padStart(2, '0')}`;
+    const pasado = f < HOY || f >= HASTA;
+    const ocupada = OCUP.has(f);
+    let clase = '', habil = !pasado;
+    const eligiendoSalida = st.entrada && !st.salida;
+    if (eligiendoSalida) {
+      // como salida vale cualquier día posterior si las noches intermedias están libres
+      habil = !pasado && f > st.entrada && libre(st.entrada, f);
+      if (f === st.entrada) habil = true;
+    } else if (ocupada) habil = false;
+    if (ocupada) clase += ' ocupada';
+    if (st.entrada && f === st.entrada) clase += ' inicio';
+    if (st.salida && f === st.salida) clase += ' fin';
+    if (st.entrada && st.salida && f > st.entrada && f < st.salida) clase += ' rango';
+    const precio = PRECIOS[fechaD(f).getUTCDay()];
+    html += `<button type="button" class="${clase}" data-f="${f}" ${habil ? '' : 'disabled'} aria-label="${fechaLarga(f)}${ocupada ? ', ocupada' : ''}">
+      <b>${d}</b><small>${ocupada ? '—' : 'Q' + precio}</small></button>`;
+  }
+  $('#cal').innerHTML = html;
+  $('#ayuda-cal').textContent = !st.entrada ? 'Toca el día de llegada.' : !st.salida ? 'Ahora toca el día de salida.' : 'Toca otro día para cambiar tus fechas.';
+}
+
+$('#cal').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-f]');
+  if (!b || b.disabled) return;
+  const f = b.dataset.f;
+  if (!st.entrada || st.salida) { st.entrada = f; st.salida = null; }
+  else if (f === st.entrada) { st.entrada = null; }
+  else if (f > st.entrada) {
+    const max = INFO.cabana.maxNoches;
+    if (nochesEntre(st.entrada, f).length > max) { aviso(`Máximo ${max} noches por reserva.`, 'error'); return; }
+    st.salida = f;
+  }
+  pintarCal(); pintarResumen();
+});
+$('#mes-ant').onclick = () => { st.mes = mover(st.mes, -1); pintarCal(); };
+$('#mes-sig').onclick = () => { st.mes = mover(st.mes, 1); pintarCal(); };
+function mover(mes, n) { const [y, m] = mes.split('-').map(Number); const d = new Date(Date.UTC(y, m - 1 + n, 1)); return d.toISOString().slice(0, 7); }
+
+function pintarResumen() {
+  const fila = (k, v) => `<div><dt>${k}</dt><dd>${v || '<span class="falta">Por elegir</span>'}</dd></div>`;
+  $('#resumen').innerHTML = fila('Llegada', st.entrada && `${fechaCorta(st.entrada)} · ${hora12(INFO.cabana.checkIn)}`)
+    + fila('Salida', st.salida && `${fechaCorta(st.salida)} · ${hora12(INFO.cabana.checkOut)}`)
+    + fila('Huéspedes', String(st.personas));
+  $('#personas').textContent = st.personas;
+  if (st.entrada && st.salida) {
+    const n = nochesEntre(st.entrada, st.salida);
+    const total = n.reduce((a, d) => a + PRECIOS[fechaD(d).getUTCDay()], 0);
+    $('#noches').innerHTML = n.map((d) => `<div><span>Noche del ${fechaCorta(d)}</span><span>${fmtQ(PRECIOS[fechaD(d).getUTCDay()])}</span></div>`).join('');
+    $('#total').textContent = fmtQ(total);
+  } else { $('#noches').innerHTML = ''; $('#total').textContent = '—'; }
+}
+
+document.addEventListener('click', (e) => {
+  const p = e.target.closest('[data-p]');
+  if (p) { st.personas = Math.min(INFO.cabana.capacidadMax, Math.max(1, st.personas + Number(p.dataset.p))); pintarResumen(); }
+});
+
+$('#form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!st.entrada || !st.salida) return aviso('Elige tus fechas de llegada y salida.', 'error');
+  const f = new FormData($('#form'));
+  const b = $('#enviar');
+  b.disabled = true; b.textContent = 'Enviando…';
+  try {
+    const r = await api('/api/reservas/cabana', { metodo: 'POST', datos: {
+      entrada: st.entrada, salida: st.salida, personas: st.personas,
+      nombre: f.get('nombre'), telefono: f.get('telefono'), correo: f.get('correo'), nota: f.get('nota') } });
+    confirmar(r);
+  } catch (err) {
+    aviso(err.message, 'error');
+    if (err.status === 409) { await cargarOcupacion(); st.entrada = st.salida = null; pintarCal(); pintarResumen(); }
+  } finally { b.disabled = false; b.textContent = 'Solicitar reserva'; }
+});
+
+function confirmar(r) {
+  const s = INFO.sucursales.find((x) => x.id === INFO.cabana.sucursal);
+  const msg = `Hola, adjunto el comprobante de pago de ${fmtQ(r.aPagar)} para Casa Alpina, reserva ${r.codigo}: del ${fechaLarga(r.fecha)} al ${fechaLarga(r.fechaSalida)}, ${r.personas} huéspedes. A nombre de ${r.nombre}.`;
+  $('#app').innerHTML = `
+    <section class="tarjeta confirmacion">
+      <span class="estado e-pendiente">Pendiente de pago</span>
+      <h2>¡Gracias, ${esc(r.nombre.split(' ')[0])}! Apartamos tus fechas</h2>
+      <p class="codigo">Código <b>${r.codigo}</b></p>
+      <dl class="datos-conf">
+        <div><dt>Llegada</dt><dd>${fechaLarga(r.fecha)}, ${hora12(INFO.cabana.checkIn)}</dd></div>
+        <div><dt>Salida</dt><dd>${fechaLarga(r.fechaSalida)}, ${hora12(INFO.cabana.checkOut)}</dd></div>
+        <div><dt>Huéspedes</dt><dd>${r.personas}</dd></div>
+        <div><dt>Total</dt><dd>${fmtQ(r.total)}</dd></div>
+      </dl>
+      ${pagoHTML(INFO.pago, r.aPagar, r.codigo)}
+      <ol class="pasos-pago">
+        <li>Transfiere el <b>100% (${fmtQ(r.aPagar)})</b> a la cuenta de arriba.</li>
+        <li>Envíanos el comprobante por WhatsApp con tu código <b>${r.codigo}</b>.</li>
+        <li>Te confirmamos la reserva. ${esc(INFO.cabana.politica.split('. ').slice(1).join('. '))}</li>
+      </ol>
+      <div class="acciones-conf">
+        <a class="btn btn-miel" href="${linkWhatsApp(INFO.whatsapp, msg)}" target="_blank" rel="noopener">${ICONOS.wa} Enviar comprobante</a>
+        <a class="btn btn-linea" href="${s.waze}" target="_blank" rel="noopener">${ICONOS.waze} Cómo llegar</a>
+      </div>
+    </section>`;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

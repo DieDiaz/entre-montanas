@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QR de mesas · Entre Montañas</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="img/icono.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  body { background: #fff; }
+  .barra-imp { display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 16px; flex-wrap: wrap; background: var(--crema-100); }
+  .hojas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 12px; padding: 16px; }
+  .cartel {
+    border: 2px solid var(--verde-800); border-radius: 22px; padding: 20px 16px 16px; text-align: center;
+    display: grid; justify-items: center; gap: 8px; background: var(--crema-50); color: var(--verde-800);
+    break-inside: avoid; page-break-inside: avoid;
+  }
+  .cartel .marca { color: var(--verde-800); }
+  .cartel .marca svg { width: 34px; height: 26px; }
+  .cartel .marca b { font-size: .95rem; }
+  .cartel h2 { font-size: 1.9rem; }
+  .cartel img { width: 180px; height: 180px; }
+  .cartel p { font-size: .85rem; color: var(--verde-700); max-width: 24ch; line-height: 1.35; }
+  .cartel .nfc { display: inline-flex; align-items: center; gap: .35rem; font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--miel-600); }
+  @media print {
+    .barra-imp { display: none; }
+    .hojas { grid-template-columns: repeat(3, 1fr); gap: 8mm; padding: 0; }
+    @page { margin: 10mm; }
+  }
+</style>
+</head>
+<body>
+<div class="barra-imp">
+  <div><b id="titulo">Códigos QR</b><p style="color:var(--tinta-suave);font-size:.9rem">Imprime, recorta y coloca cada cartel en su mesa. Solo se incluyen mesas activas.</p></div>
+  <button class="btn" onclick="print()">Imprimir</button>
+</div>
+<div class="hojas" id="hojas"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="js/comun.js"></script>
+<script>
+(async () => {
+  let token = null;
+  try { token = JSON.parse(localStorage.getItem('em-token')); } catch {}
+  if (!token) { location.href = 'personal.html'; return; }
+  const suc = new URLSearchParams(location.search).get('sucursal');
+  const [info, mesas] = await Promise.all([api('/api/info'), api('/api/personal/mesas', { token })]);
+  const s = info.sucursales.find((x) => x.id === suc) || info.sucursales[0];
+  document.getElementById('titulo').textContent = `Códigos QR · ${s.nombre}`;
+  document.getElementById('hojas').innerHTML = mesas.filter((m) => m.sucursal === s.id && m.activa).map((m) => `
+    <div class="cartel">
+      ${marcaHTML(s.nombre)}
+      <h2>${esc(m.nombre || 'Mesa ' + m.numero)}</h2>
+      <img src="${qrImagen(urlMesa(m.codigo))}" alt="">
+      <p>Escanea o acerca tu teléfono para ver el menú y pedir desde tu mesa</p>
+      <span class="nfc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 8.5a5 5 0 0 1 0 7M9.5 6a9 9 0 0 1 0 12M13 3.5a13 13 0 0 1 0 17"/></svg>QR · NFC</span>
+    </div>`).join('');
+})().catch((e) => { if (e.status === 401) location.href = 'personal.html'; else aviso(e.message, 'error'); });
+</script>
+</body>
+</html>

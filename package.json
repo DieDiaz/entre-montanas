@@ -1,0 +1,16 @@
+{
+  "name": "entre-montanas",
+  "version": "1.0.0",
+  "description": "Pedidos por mesa (QR/NFC) y reservas para Restaurante Entre Montañas y Casa Alpina. Sitio estático (GitHub Pages) + Supabase.",
+  "private": true,
+  "scripts": {
+    "instalar": "node scripts/instalar-supabase.js",
+    "dev": "npx --yes serve@14.2.4 public"
+  },
+  "engines": {
+    "node": ">=20.12"
+  },
+  "dependencies": {
+    "pg": "^8.23.1"
+  }
+}
