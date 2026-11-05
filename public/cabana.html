@@ -14,9 +14,31 @@
 <link rel="stylesheet" href="css/reservas.css">
 <style>
   .cab-res { background: linear-gradient(0deg, rgba(30,38,25,.92), rgba(30,38,25,.45)), url('img/cabana/vista.jpg') center 55% / cover; padding-bottom: 150px; }
-  .galeria { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; border-radius: var(--radio-lg); overflow: hidden; height: clamp(260px, 42vw, 420px); }
-  .galeria img { width: 100%; height: 100%; object-fit: cover; }
-  .galeria img:first-child { grid-row: span 2; }
+  /* Tendedero de fotos (js/polaroid.js) */
+  .album { background: var(--crema-100); border-radius: var(--radio-lg); overflow: hidden; box-shadow: inset 0 0 0 1px var(--crema-200); }
+  .pl-raiz { position: relative; width: 100%; height: clamp(540px, 72vw, 640px); overflow: hidden; color: var(--verde-800); user-select: none; -webkit-user-select: none; touch-action: pan-y; outline: none; cursor: grab; }
+  .pl-raiz[data-arrastre='1'] { cursor: grabbing; }
+  .pl-raiz:focus-visible { box-shadow: inset 0 0 0 2px var(--verde-800); }
+  .pl-cordon { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; stroke: #8a7f72; }
+  .pl-foto { position: absolute; left: 0; top: 0; width: var(--pl-cw); transform-origin: 50% 0; will-change: transform; }
+  .pl-papel { margin-top: 10px; background: #fbfaf7; padding: 10px 10px 0; box-shadow: 0 1px 2px rgba(0,0,0,.12), 0 18px 30px -16px rgba(0,0,0,.4); transition: transform .5s cubic-bezier(.2,.7,.2,1), filter .5s ease; }
+  .pl-foto[data-on='0'] .pl-papel { transform: scale(.9); filter: saturate(.7) brightness(.96); }
+  .pl-imagen { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--crema-200); }
+  .pl-imagen img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; pointer-events: none; }
+  .pl-nota { height: 46px; display: flex; align-items: center; justify-content: center; padding: 0 6px; font: italic 400 1rem/1.1 var(--f-titulo); color: #3b3833; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pl-pinza { position: absolute; left: 50%; top: 0; width: 10px; height: 26px; margin-left: -5px; border-radius: 2px; background: linear-gradient(90deg, #c9a67a, #e3c9a1 45%, #b8915f); box-shadow: 0 2px 3px rgba(0,0,0,.25); }
+  .pl-pinza::after { content: ''; position: absolute; left: 4px; top: 8px; width: 2px; height: 7px; background: rgba(80,60,30,.45); border-radius: 1px; }
+  .pl-barra { position: absolute; left: clamp(16px, 4vw, 32px); right: clamp(16px, 4vw, 32px); bottom: clamp(16px, 3vh, 26px); display: flex; align-items: center; gap: 12px; cursor: default; }
+  .pl-pie { flex: 1; min-width: 0; overflow: hidden; padding-bottom: .15em; }
+  .pl-pie > * { display: block; animation: pl-entra .55s cubic-bezier(.2,.8,.2,1) both; }
+  .pl-titulo { font: 500 clamp(1.1rem, 2.2vw, 1.4rem)/1.15 var(--f-titulo); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pl-texto { margin-top: 3px; font-size: .85rem; line-height: 1.4; color: var(--tinta-suave); }
+  .pl-cuenta { font: 500 .75rem/1 ui-monospace, Menlo, monospace; letter-spacing: .14em; color: var(--tinta-suave); white-space: nowrap; }
+  .pl-cuenta b { color: var(--verde-800); font-weight: 500; }
+  .pl-btn { flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--crema-300); background: var(--crema-50); color: inherit; display: grid; place-items: center; cursor: pointer; transition: background .2s, color .2s; }
+  .pl-btn:hover { background: var(--verde-800); color: var(--crema-50); }
+  @keyframes pl-entra { from { transform: translateY(100%); opacity: 0; } to { transform: none; opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .pl-pie > * { animation: none; } .pl-papel { transition: none; } }
   .info { padding: clamp(18px, 4vw, 30px); display: grid; gap: 22px; }
   .info h2 { font-size: 1.5rem; }
   .amenidades { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -64,11 +86,10 @@
 
 <main class="envoltura disposicion" id="app">
   <div style="display:grid;gap:20px;min-width:0">
-    <div class="galeria">
-      <img src="img/cabana/hero.jpg" alt="Habitación con ventana panorámica al lago">
-      <img src="img/cabana/comedor.jpg" alt="Comedor con mural de flores">
-      <img src="img/cabana/sala.jpg" alt="Sala con sofá cama turquesa">
-    </div>
+    <section class="album" aria-labelledby="album-titulo">
+      <h2 id="album-titulo" class="sr">Fotos de Casa Alpina</h2>
+      <div id="album" aria-label="Fotos de Casa Alpina. Arrastra a los lados, toca una foto o usa las flechas."></div>
+    </section>
 
     <form class="tarjeta formulario" id="form" novalidate>
       <fieldset>
@@ -120,8 +141,29 @@
 </main>
 
 <script src="js/comun.js"></script>
+<script src="js/polaroid.js"></script>
 <script>
 document.getElementById('marca').innerHTML = marcaHTML('Casa Alpina');
+
+// Tendedero de fotos
+const FOTOS = [
+  ['La cabaña', 'Casa Alpina, estilo cabaña alpina, a pasos del restaurante.'],
+  ['Entre el jardín', 'Rodeada de plantas, con vista a las montañas.'],
+  ['La habitación', 'Cama matrimonial y aire acondicionado.'],
+  ['Vista al lago', 'Despierta frente al lago de Amatitlán.'],
+  ['Para descansar', 'Lámpara cálida y ventana al paisaje.'],
+  ['Sofá cama', 'Para el tercer y cuarto huésped.'],
+  ['Sala y comedor', 'Mesa con sillas junto al sofá.'],
+  ['El mural', 'Comedor con mural de selva.'],
+  ['Techo alto', 'Lámpara colgante y ventanal de piso a techo.'],
+  ['Doble altura', 'La forma en A se siente por dentro.'],
+  ['Baño privado', 'Lavamanos de vidrio y espejo redondo.'],
+  ['Ducha', 'Baño completo dentro de la cabaña.'],
+  ['Frigobar', 'Para tus bebidas y snacks.'],
+  ['La entrada', 'Llegas directo desde el jardín.'],
+  ['De noche', 'Luna sobre la cabaña.'],
+].map(([titulo, texto], i) => ({ src: `img/cabana/album/${String(i + 1).padStart(2, '0')}.jpg`, titulo, texto, alt: `${titulo}: ${texto}` }));
+crearTendedero(document.getElementById('album'), FOTOS, { anchoFoto: 300, comba: 40 });
 const $ = (s) => document.querySelector(s);
 const st = { entrada: null, salida: null, personas: 2, mes: null };
 let INFO, OCUP = new Set(), PRECIOS = {}, HOY, HASTA;
